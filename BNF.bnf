@@ -1,0 +1,19 @@
+<PROGRAM> ::= <PROGRAM><word>NEWLINE
+
+<char> ::= [a-z]|[A-Z]
+<word> ::= <char>|<word><char>
+
+<nonzero> ::= 1|2|3|4|5|6|7|8|9
+<digit> ::= 0|<nonzero>
+<digits> ::= <digit>|<digit><digits>
+<integers> ::= <digit>|<nonzero><digits>
+<empty>   ::= 
+
+
+<functions> ::= <if_stmt> | <for_statement> | <def> NEWLINE INDENT 
+            | <def> NEWLINE <indent2> | <def> NEWLINE  | <def_call> | <comments> NEWLINE  | <action> | <print> NEWLINE 
+            | <import_statement> NEWLINE  | <class> NEWLINE 
+	        | <create_object> NEWLINE | <dictionaries> NEWLINE 
+	        | <calc_assigmnet> NEWLINE
+
+<line> ::= <functions> | NEWLINE
