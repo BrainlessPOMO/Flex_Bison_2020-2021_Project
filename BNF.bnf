@@ -1,19 +1,68 @@
 <PROGRAM> ::= <PROGRAM><word>NEWLINE
 
-<char> ::= [a-z]|[A-Z]
-<word> ::= <char>|<word><char>
+/*<char> ::= [a-z]|[A-Z]   to char to orizeis sto data_type mazi me ints klp     
+
 
 <nonzero> ::= 1|2|3|4|5|6|7|8|9
 <digit> ::= 0|<nonzero>
 <digits> ::= <digit>|<digit><digits>
-<integers> ::= <digit>|<nonzero><digits>
+<integers> ::= <digit>|<nonzero><digits> */
+
 <empty>   ::= 
+<word> ::= CHAR|<word>CHAR
 
-
-<functions> ::= <if_stmt> | <for_statement> | <def> NEWLINE INDENT 
-            | <def> NEWLINE <indent2> | <def> NEWLINE  | <def_call> | <comments> NEWLINE  | <action> | <print> NEWLINE 
-            | <import_statement> NEWLINE  | <class> NEWLINE 
-	        | <create_object> NEWLINE | <dictionaries> NEWLINE 
+<line> ::= <if_stmt> | <elseif_stmt> | <else_stmt> |<for_statement> | <function> NEWLINE INDENT 
+            | <function> NEWLINE <indent2> | <function> NEWLINE  | <function_call> | <comments> NEWLINE  | <action> | <print> NEWLINE 
+            | <switch>  NEWLINE  <case> NEWLINE
+          /*| <import_statement> NEWLINE */
+            | <dictionaries> NEWLINE 
 	        | <calc_assigmnet> NEWLINE
 
-<line> ::= <functions> | NEWLINE
+<action> ::= INDENT <line> | <indent2> <line> | <indent3> <line>  /*not sure about this */
+                     | <indent4> <line> | <indent5> <line>
+
+<data_type> ::= CHAR | INTEGER | IDENTIFIER QM /*mpainei erwtimatiko meta apo tis dilwseis auton se antithesi me python*/
+
+/*<line> ::= <functions> | NEWLINE */
+
+<if_stmt> ::= IF IDENTIFIER L_PAR <operators> <data_type> R_PAR COLON NEWLINE <action> | <elseif_stmt> | <else_stmt> | BREAK QM NEWLINE | ENDIF NEWLINE
+<elseif_stmt> ::= ELSEIF IDENTIFIER L_PAR<operators> <data_type> R_PAR COLON NEWLINE <action> | <else_stmt> NEWLINE
+<else_stmt> ::= ELSE IDENTIFIER L_PAR <operators> <data_type> R_PAR COLON NEWLINE <action> | BREAK QM NEWLINE | ENDIF NEWLINE
+
+<for_statement> ::= FOR IDENTIFIER TO <function_call> COLON NEWLINE <action> ENDFOR NEWLINE /*TO (&STEP) ?*/
+
+<switch> ::= SWITCH IDENTIFIER L_PAR LT <operators> <data_type> GT R_PAR COLON NEWLINE <action> NEWLINE <case> <action> NEWLINE
+<case> ::= CASE IDENTIFIER  L_PAR LT <operators> <data_type> GT R_PAR COLON NEWLINE <action> BRAKE QM NEWLINE ENDSWITCH NEWLINE
+
+<operators> ::= AND_OP | OR_OP | EQ_OP | GE_OP | LE_OP | NE_OP | DEC_OP | INC_OP | LT | GT
+
+<optional_parameters> ::= IDENTIFIER | <optional_parameters> COMMA IDENTIFIER | COMMA /*?*/
+
+<function> ::= FUNCTION IDENTIFIER L_PAR <optional_parameters> R_PAR COLON | RETURN IDENTIFIER QM | ENDFUNCTION
+
+<function_call> ::= IDENTIFIER L_PAR <optional_parameters> R_PAR 
+	                   | IDENTIFIER L_PAR <data_type> R_PAR
+                       | IDENTIFIER L_PAR <data_type> COMMA <data_type> R_PAR    
+                       | IDENTIFIER L_PAR <data_type> COMMA <data_type> COMMA    
+                         <data_type> R_PAR
+<comments> ::= COMMENT
+
+<print> ::= PRINT L_PAR <data_type> R_PAR QM
+
+<main_func> ::= STARTMAIN | VARS | <int_data> | <data_type> | <operators> | <function_call> QM | <line> <action> ENDMAIN /*poly posibol na nai lathos*/ 
+
+/*<import_statement> ::=
+  FROM IDENTIFIER IMPORT IDENTIFIER AS IDENTIFIER 
+        			| FROM IDENTIFIER IMPORT IDENTIFIER
+| FROM IDENTIFIER IMPORT MUL 
+| IMPORT IDENTIFIER AS IDENTIFIER
+  			| IMPORT IDENTIFIER
+| FROM IDENTIFIER IMPORT IDENTIFIER COMMA IDENTIFIER
+ idk ti kanei auto*/
+
+ <term> ::= <data_type>
+ <calc_assigmnet> ::= IDENTIFIER ASSIGN <int_op>
+ <int_op> ::= <int_data> | <int_op> PLUS <int_data> | <int_op> MINUS <int_data> 
+	       | <int_op> MUL <int_data>  
+           | <int_op> DIV <int_data> 
+ <int_data> ::= INTEGER | IDENTIFIER
