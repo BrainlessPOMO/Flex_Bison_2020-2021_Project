@@ -34,6 +34,8 @@
 <switch> ::= SWITCH IDENTIFIER L_PAR LT <operators> <data_type> GT R_PAR COLON NEWLINE <action> NEWLINE <case> <action> NEWLINE
 <case> ::= CASE IDENTIFIER  L_PAR LT <operators> <data_type> GT R_PAR COLON NEWLINE <action> BRAKE QM NEWLINE ENDSWITCH NEWLINE
 
+<while> ::= WHILE IDENTIFIER L_PAR <operators> <data_type> R_PAR NEWLINE | <if_stmt> NEWLINE | ENDWHILE
+
 <operators> ::= AND_OP | OR_OP | EQ_OP | GE_OP | LE_OP | NE_OP | DEC_OP | INC_OP | LT | GT
 
 <optional_parameters> ::= IDENTIFIER | <optional_parameters> COMMA IDENTIFIER | COMMA /*?*/
