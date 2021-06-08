@@ -34,15 +34,18 @@ char            \'{print}\'
 
 %%
 
-"%".*           {  print_return("COMMENT"); return COMMENT; }
-    //"/*"*"*/"       {  print_return("MULCOMMENT"); return MULCOMMENT; }
+"PROGRAM"       {  print_return("PROGRAM"); return PROGRAM}
+
+"//".*          {  print_return("COMMENT"); return COMMENT; }
+
 "BREAK"         {  print_return("BREAK"); return BREAK; }
 "VARS"          {  print_return("VARS"); return VARS; }    
 
 "STARTMAIN"     {  print_return("STARTMAIN");  return STARTMAIN; }   
-"ENDMAIN"       { print_return("ENDMAIN"); return ENDMAIN;}
+"ENDMAIN"       {  print_return("ENDMAIN"); return ENDMAIN;}
 
-"IF"            {  print_return("IF");  return IF; }   
+"IF"            {  print_return("IF");  return IF; }
+"THEN"          {  print_return("THEN"); return THEN;}
 "ELSEIF"        {  print_return("ELSEIF"); return ELSEIF; }
 "ELSE"          {  print_return("ELSE"); return ELSE; }
 "ENDIF"         {  print_return("ENDIF"); return ENDIF; }
@@ -76,8 +79,8 @@ char            \'{print}\'
 "%="            {  print_return("MOD_ASSIGN"); return MOD_ASSIGN; }     
 "--"            {  print_return("DEC_OP"); return DEC_OP; }      
 "++"            {  print_return("INC_OP"); return INC_OP; }        
-"&&"            {  print_return("AND_OP"); return AND_OP; }      
-"||"            {  print_return("OR_OP"); return OR_OP; }       
+"AND"           {  print_return("AND_OP"); return AND_OP; }      
+"OR"            {  print_return("OR_OP"); return OR_OP; }       
 "=="            {  print_return("EQ_OP"); return EQ_OP; }      
 ">="            {  print_return("GE_OP"); return GE_OP; }      
 "<="            {  print_return("LE_OP"); return LE_OP; }      
@@ -85,7 +88,6 @@ char            \'{print}\'
 "{"             {  print_return("L_BRACE"); return L_BRACE; }        
 "}"             {  print_return("R_BRACE"); return R_BRACE; }        
 ","             {  print_return("COMMA"); return COMMA; }       
-":"             {  print_return("COLON"); return COLON; }        
 
 "="             {  print_return("ASSIGN"); return ASSIGN; }       
 "("             {  print_return("L_PAR"); return L_PAR; }        
@@ -96,7 +98,8 @@ char            \'{print}\'
 "_"	            {  print_return("UNDERSCORE"); return UNDERSCORE; }       
 "-"             {  print_return("MINUS"); return MINUS; }        
 "+"             {  print_return("PLUS"); return PLUS; }       
-"*"             {  print_return("MUL"); return MUL; }     
+"*"             {  print_return("MUL"); return MUL; } 
+":"             {  print_return("COLON"); return COLON; }
 
 "/"             {  print_return("DIV"); return DIV; }
 "<"             {  print_return("LT"); return LT; }
@@ -110,10 +113,7 @@ char            \'{print}\'
 {char}	        { print_return("CHAR"); return CHAR; }
 
 %%
-
-/* -------------------------------------- C FUNCTIONS ---------------------------------------- */
-
 void print_return(char *token)
-{	
+{
 	printf("Token: %s\t\t Line: %d\t\t Text: %s\n", token, line_no, yytext);	
 }
