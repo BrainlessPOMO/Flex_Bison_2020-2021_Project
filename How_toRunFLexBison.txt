@@ -1,0 +1,7 @@
+How to run flex bison:
+
+1) katebazeis ta flex & bison:
+2) win_flex lexer.l
+3) win_bison -d parser.y
+4) gcc lex.yy.c parser.tab.c
+5) ./a "onoma arxeiou"
