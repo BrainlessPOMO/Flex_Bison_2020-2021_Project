@@ -28,7 +28,7 @@ alphanumeric    {alphabet}|{digit}
 PRINT           [ -~]
 underscore      _
 identifier      ({alphabet}|{underscore})+({alphanumeric}|{underscore})*
-integer         "0"|[0-9]{digit}*
+integer         "0"|[1-9]{digit}* // correction 0->1 αλλιώς έτρεχε για ints 01,02..  
 float_number    "0"|{digit}*"."{digit}+
 char            \'{print}\'
 
