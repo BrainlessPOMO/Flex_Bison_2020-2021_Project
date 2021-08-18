@@ -4,12 +4,13 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
-    #include <regex.h>
+    #include <math.h>
+    #include <unistd.h>
     #include "parser.tab.h"
 
     extern FILE *yyin;
     extern FILE *yyout;
-    int line_no = 1;
+    int line_no = 1; //program's line number
 
     //the function of lexer analysis. Return the token
     int yylex();
@@ -23,23 +24,23 @@
 %x ML_COMMENT
 
 alphabet        [a-zA-Z]		
-digit           [0-9]
-alphanumeric    {alphabet}|{digit}
-PRINT           [ -~]
+alphanumeric    {alphabet}|{integer}
+print           [ -~]
 underscore      _
 identifier      ({alphabet}|{underscore})+({alphanumeric}|{underscore})*
-integer         "0"|[1-9]{digit}* // correction 0->1 αλλιώς έτρεχε για ints 01,02..  
-float_number    "0"|{digit}*"."{digit}+
+integer         [0-9][0-9]*
+float_number    "0"|{integer}*"."{integer}+
 char            \'{print}\'
+string          \".*\" 
 
 %%
 
-"PROGRAM"       {  print_return("PROGRAM"); return PROGRAM}
 
-"//".*          {  print_return("COMMENT"); return COMMENT; }
+
+"%".*          {  print_return("COMMENT"); return COMMENT; }
 
 "BREAK"         {  print_return("BREAK"); return BREAK; }
-"VARS"          {  print_return("VARS"); return VARS; }    
+"VARS"          {  print_return("VARS"); return VARS; }   
 
 "STARTMAIN"     {  print_return("STARTMAIN");  return STARTMAIN; }   
 "ENDMAIN"       {  print_return("ENDMAIN"); return ENDMAIN;}
@@ -59,9 +60,9 @@ char            \'{print}\'
 "CASE"          {  print_return("CASE"); return CASE; }
 "ENDSWITCH"     {  print_return("ENDSWITCH"); return ENDSWITCH; }
 
-"RETURN"        {  print_return("RETURN"); RETURN; }
+"RETURN"        {  print_return("RETURN"); return RETURN; }
 
-"FUNCTION"	    {  print_return("FUN"); return FUN; }
+"FUNCTION"	    {  print_return("FUNCTION"); return FUNCTION; }
 "ENDFUNCTION"   {  print_return("ENDFUNCTION"); return ENDFUNCTION; }
 
 "PRINT"         {  print_return("PRINT"); return PRINT; }
@@ -69,14 +70,15 @@ char            \'{print}\'
 "WHILE"         {  print_return("WHILE"); return WHILE;}
 "ENDWHILE"      {  print_return("ENDWHILE"); return ENDWHILE;}
 
+
+
 ";"             {  print_return("QM"); return QM; }
 "\n"            {  line_no++; print_return("NEWLINE"); return NEWLINE; }     
 "\t"            {  print_return("INDENT"); return INDENT; }     
        
 "+="            {  print_return("ADD_ASSIGN"); return ADD_ASSIGN; }        
 "-="            {  print_return("SUB_ASSIGN"); return SUB_ASSIGN; }       
-"/="            {  print_return("DIV_ASSIGN"); return DIV_ASSIGN; }       
-"%="            {  print_return("MOD_ASSIGN"); return MOD_ASSIGN; }     
+"/="            {  print_return("DIV_ASSIGN"); return DIV_ASSIGN; }            
 "--"            {  print_return("DEC_OP"); return DEC_OP; }      
 "++"            {  print_return("INC_OP"); return INC_OP; }        
 "AND"           {  print_return("AND_OP"); return AND_OP; }      
@@ -108,11 +110,14 @@ char            \'{print}\'
 . 		        { yyerror("Unkown character"); }
 
 {identifier} 	{ print_return("ID"); strcpy(yylval.name, yytext);  return IDENTIFIER; } 
-{integer}       { yylval.integer_val = atoi(yytext); print_return("INTEGER"); return INTEGER; }
+{integer}       { print_return("INTEGER"); yylval.integer_val = atoi(yytext); return INTEGER; }
 {float_number}  { print_return("FLOAT"); return FLOAT; }
 {char}	        { print_return("CHAR"); return CHAR; }
+{string}	    { print_return("STRING"); return STRING; }
 
 %%
+/* -------------------------------------------------------------------------------------- C FUNCTIONS ---------------------------------------------------------------------------------------------------- */
+
 void print_return(char *token)
 {
 	printf("Token: %s\t\t Line: %d\t\t Text: %s\n", token, line_no, yytext);	
