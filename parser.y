@@ -116,13 +116,13 @@
 
 %%
 
-program: PROGRAM IDENTIFIER NEWLINE line start_main ; 
+program: PROGRAM IDENTIFIER NEWLINE | program NEWLINE line start_main ; 
 
 line:   if_stmt {;} 
         | elseif_stmt {;} 
         | else_stmt {;} 
         | for_statement {;} 
-        | function end_function NEWLINE{;} 
+        | function NEWLINE{;} 
         | function_call {;} 
         | comments NEWLINE {;}
         | action {;}
@@ -187,7 +187,7 @@ return: RETURN INTEGER QM NEWLINE
 
 function: FUNCTION IDENTIFIER L_PAR optional_parameters R_PAR NEWLINE line NEWLINE return
           | FUNCTION IDENTIFIER L_PAR optional_parameters R_PAR NEWLINE line
-          | function end_function
+          | function end_function NEWLINE
           ;
 
 end_function: END_FUNCTION;
@@ -266,7 +266,7 @@ optional_parameters: IDENTIFIER
                      | IDENTIFIER IDENTIFIER
                      ;
 
-comments: COMMENT ;
+comments: COMMENT | COMMENT NEWLINE | comments line | comments line NEWLINE;
 
 print: PRINT L_PAR data_type R_PAR QM | PRINT L_PAR data_type print_name_var R_PAR QM;
 print_name_var: L_BRACK COMMA IDENTIFIER R_BRACK 
