@@ -1,5 +1,6 @@
 PROGRAM input
 
+%function/if test
 FUNCTION smaller(INTEGER x1, INTEGER x2)
     IF (x1<x2) THEN
         PRINT(""[,x1]);      
@@ -11,7 +12,7 @@ FUNCTION smaller(INTEGER x1, INTEGER x2)
     RETURN x1;
 END_FUNCTION 
 
-
+%function/while test 
 FUNCTION doStuff(INTEGER var1, INTEGER var2)
     WHILE(var1<10 AND var2<20)
         IF(var1==var2) THEN
@@ -21,9 +22,10 @@ FUNCTION doStuff(INTEGER var1, INTEGER var2)
         var2 >= 56;
     ENDWHILE
 
-    RETURN var1/var2;
+    RETURN var2;
 END_FUNCTION
 
+%functon/switch case test 
 FUNCTION swissFiss(INTEGER day)
     SWITCH(<day>)
     CASE(<11>)
@@ -50,6 +52,7 @@ FUNCTION swissFiss(INTEGER day)
     ENDSWITCH
 END_FUNCTION
 
+%main function
 STARTMAIN
     VARS
         CHAR x, y;
