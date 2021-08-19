@@ -39,6 +39,8 @@ string          \".*\"
 
 "%".*          {  print_return("COMMENT"); return COMMENT; }
 
+"PROGRAM"       { print_return("PROGRAM"); return PROGRAM; }
+
 "BREAK"         {  print_return("BREAK"); return BREAK; }
 "VARS"          {  print_return("VARS"); return VARS; }   
 
@@ -63,7 +65,7 @@ string          \".*\"
 "RETURN"        {  print_return("RETURN"); return RETURN; }
 
 "FUNCTION"	    {  print_return("FUNCTION"); return FUNCTION; }
-"ENDFUNCTION"   {  print_return("ENDFUNCTION"); return ENDFUNCTION; }
+"END_FUNCTION"   {  print_return("END_FUNCTION"); return END_FUNCTION; }
 
 "PRINT"         {  print_return("PRINT"); return PRINT; }
 
