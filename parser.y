@@ -273,9 +273,10 @@ print_name_var: L_BRACK COMMA IDENTIFIER R_BRACK
                 | L_BRACK COMMA array R_BRACK 
                 ;
 
-start_main: STARTMAIN line
-           | STARTMAIN line NEWLINE
-           | start_main end_main
+start_main: STARTMAIN NEWLINE line 
+           | start_main line 
+           | start_main line NEWLINE
+           | start_main end_main 
            ;
 end_main: ENDMAIN;
 
