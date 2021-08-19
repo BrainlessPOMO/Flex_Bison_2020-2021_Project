@@ -1,69 +1,63 @@
-PROGRAM kati
+PROGRAM input
 
-FUNCTION smaller(INTEGER a, INTEGER b)
-
-    IF (a<b) THEN
-        PRINT(""[,a]);      %To a einai mikrotero
-    ELSEIF (b<a)
-        PRINT(""[,b]);      %To b einai mikrotero
+FUNCTION smaller(INTEGER x1, INTEGER x2)
+    IF (x1<x2) THEN
+        PRINT(""[,x1]);      
+    ELSEIF (x1<x2)
+        PRINT(""[,x2]);      
     ELSE 
-        PRINT("The two numbers are equal")  %Oi arithmoi einai isoi
+        PRINT("The two numbers are equal");  
     ENDIF
+    RETURN x1;
+END_FUNCTION 
 
-    RETURN 0;
 
-END_FUNCTION
-
-FUNCTION doStuff(INTEGER a, INTEGER b)
-
-    WHILE(a<10 AND b<20)
-        IF(a=b) THEN
+FUNCTION doStuff(INTEGER var1, INTEGER var2)
+    WHILE(var1<10 AND var2<20)
+        IF(var1==var2) THEN
             BREAK;
         ENDIF        
-        a = a+1;
-        b = b+2;
+        var1 = 45;
+        var2 >= 56;
     ENDWHILE
-    
-    RETURN a/b;
 
+    RETURN var1/var2;
 END_FUNCTION
 
 FUNCTION swissFiss(INTEGER day)
-    
     SWITCH(<day>)
-    CASE(<1>)
+    CASE(<11>)
         PRINT("Monday");
         BREAK;
-    CASE(<2>)
+    CASE(<12>)
         PRINT("Tuesday");
         BREAK;
-    CASE(<3>)
+    CASE(<13>)
         PRINT("Wednesday");
         BREAK;
-    CASE(<4>)
+    CASE(<14>)
         PRINT("Thursday");
         BREAK;
-    CASE(<5>)
+    CASE(<15>)
         PRINT("Friday");
         BREAK;
-    CASE(<6>)
+    CASE(<16>)
         PRINT("Saturday");
         BREAK;
-    CASE(<7>)
+    CASE(<17>)
         PRINT("Sunday");
         BREAK;
     ENDSWITCH
-
 END_FUNCTION
 
 STARTMAIN
     VARS
         CHAR x, y;
-        INTEGER i, foo, foo1, foo2, foo3, foo4, foo5, pinakas[10], day;
+        INTEGER varr, foo, foo1, foo2, foo3, foo4, foo5, pinakas[10], day;
     
-    foo = 1;
-    foo1 = foo + 2;
-    foo2 = (foo - foo1)*(5);
+    foo = 10;
+    foo1 = foo + 20;
+    foo2 = (foo - foo1)*(50);
     foo3 = foo / foo2;
     foo4 = doStuff(foo3, foo1);
 
@@ -78,8 +72,8 @@ STARTMAIN
     pinakas[8] = 9;
     pinakas[9] = 10;
 
-    FOR i:=0 TO 9 STEP 1
-        PRINT(""[,pinakas[i]]);
+    FOR varr:=0 TO 9 STEP 1
+        PRINT(""[,pinakas[varr]]);
     ENDFOR
 
     day = pinakas[5];
