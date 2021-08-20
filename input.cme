@@ -1,5 +1,8 @@
 PROGRAM input
-
+/*---------------------------FLEX AND BISON PROJECT -----------------------------
+--------------------------LEXICAL AND SYNTAX ANALYSIS ---------------------
+------------------------------HERE'S OUR PROGRAM------------------------------------
+---------------------------MULTIPLE LINE COMMENT TEST---------------------------------------------*/
 %function/if test
 FUNCTION smaller(INTEGER x1, INTEGER x2)
     IF (x1<x2) THEN
