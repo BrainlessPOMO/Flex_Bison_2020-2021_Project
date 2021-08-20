@@ -32,6 +32,7 @@
 /* --------------------------------------- TOKENS ---------------------------------------*/
 
 %token COMMENT
+%token ML_COMMENT
 %token BREAK
 %token VARS
 %token QM
@@ -116,7 +117,7 @@
 
 %%
 
-program: PROGRAM IDENTIFIER NEWLINE | program NEWLINE line start_main ; 
+program: PROGRAM IDENTIFIER NEWLINE | program NEWLINE line NEWLINE start_main ; 
 
 line:   if_stmt {;} 
         | elseif_stmt {;} 
@@ -125,7 +126,6 @@ line:   if_stmt {;}
         | function NEWLINE{;} 
         | function_call {;} 
         | comments NEWLINE {;}
-        | action {;}
         | variable {;}
         | print NEWLINE {;}
         | break {;}
@@ -136,23 +136,16 @@ line:   if_stmt {;}
         | dictionary_data NEWLINE {;}
 	| calc_assignment NEWLINE {;}
         | NEWLINE {;}  
+        | start_main NEWLINE{;}
         ;
+
+/*--------- BREAK -------------*/
 
 break: BREAK QM NEWLINE ;
 
-indent2:' '' ';
-indent3:' '' '' ';
-indent4:' '' '' '' ';
-indent5:' '' '' '' '' ';
 
 
-action: INDENT
-        |INDENT line 
-        | indent2 line 
-        | indent3 line 
-        | indent4 line 
-        | indent5 line 
-        ;
+/*--------- DATA TYPES -------------*/
 
 data_type: CHAR
         | INTEGER 
@@ -160,6 +153,8 @@ data_type: CHAR
         | IDENTIFIER
         | STRING
         ;
+
+/*--------- VARS -------------*/
 
 variable: VARS NEWLINE data_type inspector 
         | VARS NEWLINE data_type IDENTIFIER COMMA IDENTIFIER 
@@ -180,26 +175,33 @@ variable_dictionary: data_type inspector
                      | NEWLINE line
                      | variable 
                      ;
+
+/*--------- RETURN -------------*/
+
 return: RETURN INTEGER QM NEWLINE
         | RETURN IDENTIFIER QM NEWLINE
         | RETURN int_op QM NEWLINE
         ;
 
+/*--------- FUNCTIONS --------------*/
+
 function: FUNCTION IDENTIFIER L_PAR optional_parameters R_PAR NEWLINE line NEWLINE return
           | FUNCTION IDENTIFIER L_PAR optional_parameters R_PAR NEWLINE line
-          | function end_function NEWLINE
+          | function end_function 
           ;
 
 end_function: END_FUNCTION;
 
 function_call: IDENTIFIER L_PAR optional_parameters R_PAR 
-	        | IDENTIFIER L_PAR data_type R_PAR
+	        | IDENTIFIER L_PAR data_type R_PAR 
                 | IDENTIFIER L_PAR data_type COMMA data_type R_PAR    
                 | IDENTIFIER L_PAR data_type COMMA data_type COMMA data_type R_PAR
+                | function_call QM NEWLINE
                 ;
 
-inspector:IDENTIFIER operators IDENTIFIER
-        |IDENTIFIER operators data_type
+/*------------ INSPECTORS -------------*/
+
+inspector:IDENTIFIER operators data_type
         |data_type operators IDENTIFIER
         ;
 
@@ -209,6 +211,8 @@ inspector_gen: inspector
                | inspector_gen QM
                ; 
 
+
+/*----------- IF & FOR STATEMENTS -------------*/
 
 if_stmt: IF L_PAR inspector R_PAR THEN NEWLINE line 
         | if_stmt end_if_stmt 
@@ -226,6 +230,9 @@ for_statement: FOR IDENTIFIER COLON ASSIGN INTEGER TO INTEGER STEP INTEGER NEWLI
                ;
 end_for_statement: ENDFOR;
 
+
+/*---------- SWITCH / CASE STATEMENT -----------------*/
+
 switch: SWITCH L_PAR LT IDENTIFIER GT R_PAR NEWLINE 
         |SWITCH L_PAR LT IDENTIFIER GT R_PAR COMMENT NEWLINE 
         |switch case 
@@ -235,6 +242,9 @@ switch: SWITCH L_PAR LT IDENTIFIER GT R_PAR NEWLINE
 case:  CASE L_PAR LT INTEGER GT R_PAR NEWLINE line break;
 end_switch: ENDSWITCH;
 
+
+/*-------------- WHILE ---------------*/
+
 while: WHILE L_PAR inspector_gen R_PAR NEWLINE line NEWLINE
         |while line
         |while line NEWLINE
@@ -242,10 +252,16 @@ while: WHILE L_PAR inspector_gen R_PAR NEWLINE line NEWLINE
         ;
 end_while: ENDWHILE;
 
+
+/*-------------- ARRAY ---------------*/
+
 array: IDENTIFIER L_BRACK INTEGER R_BRACK
         | IDENTIFIER L_BRACK IDENTIFIER R_BRACK
         ;
 array_value: array ASSIGN INTEGER ;  
+
+
+/*-------------- OPERATORS & OPTIONAL PARAMETERS ---------------*/
 
 operators:EQ_OP 
       | GE_OP 
@@ -255,8 +271,8 @@ operators:EQ_OP
       | INC_OP 
       | LT 
       | GT
-      |AND_OP
-      |OR_OP
+      | AND_OP
+      | OR_OP
       ;
 
 
@@ -266,33 +282,48 @@ optional_parameters: IDENTIFIER
                      | IDENTIFIER IDENTIFIER
                      ;
 
-comments: COMMENT | COMMENT NEWLINE | comments line | comments line NEWLINE;
+
+/*-------------- COMMENTS ---------------*/
+
+comments: COMMENT |  comments line | comments line NEWLINE | ml_comments;
+ml_comments: ML_COMMENT ;
+
+
+/*-------------- PRINT ---------------*/
 
 print: PRINT L_PAR data_type R_PAR QM | PRINT L_PAR data_type print_name_var R_PAR QM;
 print_name_var: L_BRACK COMMA IDENTIFIER R_BRACK 
                 | L_BRACK COMMA array R_BRACK 
                 ;
 
-start_main: STARTMAIN NEWLINE line 
+/*-------------- MAIN ---------------*/
+
+start_main: STARTMAIN NEWLINE 
+           | STARTMAIN NEWLINE line 
+           | start_main NEWLINE
            | start_main line 
            | start_main line NEWLINE
            | start_main end_main 
            ;
 end_main: ENDMAIN;
 
+
+/* ----------- DICTIONARIES ----------- */
+
 dictionaries: IDENTIFIER ASSIGN L_BRACE dictionary_data R_BRACE 
         | IDENTIFIER ASSIGN IDENTIFIER L_PAR L_BRACK L_PAR dictionary_data R_PAR R_BRACK R_PAR
-	|IDENTIFIER ASSIGN IDENTIFIER L_PAR dictionary_data optional_parameters dictionary_data R_PAR 
+	| IDENTIFIER ASSIGN IDENTIFIER L_PAR dictionary_data optional_parameters dictionary_data R_PAR 
         | array_value QM
         ;
 
-dictionary_data: data_type COLON data_type 
-        |data_type COLON data_type COMMA dictionary_data 
-        | data_type COMMA data_type optional_parameters 
-        | IDENTIFIER ASSIGN data_type QM 
-        |/* empty */ 
-        ;
+dictionary_data: data_type COMMA data_type optional_parameters 
+                 | IDENTIFIER ASSIGN data_type QM 
+                 |/* empty */ 
+                 ;
 
+
+
+/* ----------- CALCULATE ------------ */
 
 calc_assignment: IDENTIFIER ASSIGN int_op { Change($1, $3); };
 	
