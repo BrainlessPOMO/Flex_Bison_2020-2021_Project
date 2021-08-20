@@ -11,6 +11,7 @@
     extern FILE *yyin;
     extern FILE *yyout;
     int line_no = 1; //program's line number
+    int line_init=-1; // For multiline comments & strings
 
     //the function of lexer analysis. Return the token
     int yylex();
@@ -37,7 +38,16 @@ string          \".*\"
 
 
 
-"%".*          {  print_return("COMMENT"); return COMMENT; }
+"%".*\n          {  print_return("COMMENT"); return COMMENT; }
+
+<INITIAL>"/*"                { BEGIN(ML_COMMENT); }
+<ML_COMMENT>"*"+"/"          { BEGIN(INITIAL);}
+
+<ML_COMMENT>([^*]|\n)+|.
+
+
+
+<ML_COMMENT><<EOF>>       {yyerror("Unterminated comment", 1); return 0;}
 
 "PROGRAM"       { print_return("PROGRAM"); return PROGRAM; }
 
