@@ -37,6 +37,8 @@
 %token VARS
 %token QM
 
+%token NEWLINE
+
 %token STARTMAIN 
 %token ENDMAIN
 
@@ -62,7 +64,6 @@
 %token WHILE
 %token ENDWHILE
 
-%token NEWLINE
 %token INDENT
 
 %token FUNCTION
@@ -117,26 +118,26 @@
 
 %%
 
-program: PROGRAM IDENTIFIER NEWLINE | program NEWLINE line NEWLINE start_main ; 
+program: PROGRAM IDENTIFIER NEWLINE | program line | program start_main ; 
 
 line:   if_stmt {;} 
         | elseif_stmt {;} 
         | else_stmt {;} 
         | for_statement {;} 
-        | function NEWLINE{;} 
+        | function {;} 
         | function_call {;} 
-        | comments NEWLINE {;}
+        | comments  {;}
         | variable {;}
-        | print NEWLINE {;}
+        | print  {;}
         | break {;}
         | inspector_gen {;}
-        | switch case end_switch NEWLINE {;}
-        | while NEWLINE {;}
-        | dictionaries NEWLINE {;} 
-        | dictionary_data NEWLINE {;}
-	| calc_assignment NEWLINE {;}
-        | NEWLINE {;}  
-        | start_main NEWLINE{;}
+        | switch  {;}
+        | while  {;}
+        | dictionaries  {;} 
+        | NEWLINE {;}
+        | dictionary_data  {;}
+	| calc_assignment  {;}  
+        | start_main {;}
         ;
 
 /*--------- BREAK -------------*/
@@ -156,12 +157,12 @@ data_type: CHAR
 
 /*--------- VARS -------------*/
 
-variable: VARS NEWLINE data_type inspector 
-        | VARS NEWLINE data_type IDENTIFIER COMMA IDENTIFIER 
-        | VARS NEWLINE variable_dictionary
+variable: VARS  data_type inspector 
+        | VARS  data_type IDENTIFIER COMMA IDENTIFIER 
+        | VARS  variable_dictionary
         | variable variable_dictionary
         | variable QM
-        | variable NEWLINE variable_dictionary QM
+        | variable  variable_dictionary QM
         ;
 variable_dictionary: data_type inspector
                      | data_type IDENTIFIER COMMA IDENTIFIER
@@ -171,9 +172,7 @@ variable_dictionary: data_type inspector
                      | IDENTIFIER COMMA IDENTIFIER 
                      | variable_dictionary COMMA IDENTIFIER
                      | variable_dictionary COMMA array
-                     | NEWLINE
-                     | NEWLINE line
-                     | variable 
+                     | line 
                      ;
 
 /*--------- RETURN -------------*/
@@ -185,12 +184,11 @@ return: RETURN INTEGER QM NEWLINE
 
 /*--------- FUNCTIONS --------------*/
 
-function: FUNCTION IDENTIFIER L_PAR optional_parameters R_PAR NEWLINE line NEWLINE return
-          | FUNCTION IDENTIFIER L_PAR optional_parameters R_PAR NEWLINE line
-          | function end_function 
+function: FUNCTION IDENTIFIER L_PAR optional_parameters R_PAR NEWLINE line
+          | function return end_function 
           ;
 
-end_function: END_FUNCTION;
+end_function: END_FUNCTION NEWLINE;
 
 function_call: IDENTIFIER L_PAR optional_parameters R_PAR 
 	        | IDENTIFIER L_PAR data_type R_PAR 
@@ -214,43 +212,42 @@ inspector_gen: inspector
 
 /*----------- IF & FOR STATEMENTS -------------*/
 
-if_stmt: IF L_PAR inspector R_PAR THEN NEWLINE line 
+if_stmt: IF L_PAR inspector R_PAR THEN NEWLINE
+        | if_stmt line
         | if_stmt end_if_stmt 
         | if_stmt elseif_stmt 
         | if_stmt elseif_stmt else_stmt 
         ;
-elseif_stmt: ELSEIF L_PAR inspector R_PAR NEWLINE line ;
-else_stmt: ELSE NEWLINE line;
-end_if_stmt: ENDIF;
+elseif_stmt: ELSEIF L_PAR inspector R_PAR  line ;
+else_stmt: ELSE  line;
+end_if_stmt: ENDIF NEWLINE;
 
 for_statement: FOR IDENTIFIER COLON ASSIGN INTEGER TO INTEGER STEP INTEGER NEWLINE
                |for_statement line 
-               |for_statement line NEWLINE
                |for_statement end_for_statement
                ;
-end_for_statement: ENDFOR;
+end_for_statement: ENDFOR NEWLINE;
 
 
 /*---------- SWITCH / CASE STATEMENT -----------------*/
 
-switch: SWITCH L_PAR LT IDENTIFIER GT R_PAR NEWLINE 
-        |SWITCH L_PAR LT IDENTIFIER GT R_PAR COMMENT NEWLINE 
+switch: SWITCH L_PAR LT IDENTIFIER GT R_PAR NEWLINE
+        |SWITCH L_PAR LT IDENTIFIER GT R_PAR COMMENT  
         |switch case 
-        |switch case end_switch NEWLINE
+        |switch case end_switch
         ;
 
 case:  CASE L_PAR LT INTEGER GT R_PAR NEWLINE line break;
-end_switch: ENDSWITCH;
+end_switch: ENDSWITCH NEWLINE;
 
 
 /*-------------- WHILE ---------------*/
 
-while: WHILE L_PAR inspector_gen R_PAR NEWLINE line NEWLINE
-        |while line
-        |while line NEWLINE
+while: WHILE L_PAR inspector_gen R_PAR NEWLINE 
+        |while line 
         |while end_while 
         ;
-end_while: ENDWHILE;
+end_while: ENDWHILE NEWLINE;
 
 
 /*-------------- ARRAY ---------------*/
@@ -285,27 +282,24 @@ optional_parameters: IDENTIFIER
 
 /*-------------- COMMENTS ---------------*/
 
-comments: COMMENT |  comments line | comments line NEWLINE | ml_comments;
+comments: COMMENT |  comments line | ml_comments;
 ml_comments: ML_COMMENT ;
 
 
 /*-------------- PRINT ---------------*/
 
-print: PRINT L_PAR data_type R_PAR QM | PRINT L_PAR data_type print_name_var R_PAR QM;
+print: PRINT L_PAR data_type R_PAR QM | PRINT L_PAR data_type print_name_var R_PAR QM | print NEWLINE;
 print_name_var: L_BRACK COMMA IDENTIFIER R_BRACK 
                 | L_BRACK COMMA array R_BRACK 
                 ;
 
 /*-------------- MAIN ---------------*/
 
-start_main: STARTMAIN NEWLINE 
-           | STARTMAIN NEWLINE line 
-           | start_main NEWLINE
+start_main: STARTMAIN  NEWLINE
            | start_main line 
-           | start_main line NEWLINE
            | start_main end_main 
            ;
-end_main: ENDMAIN;
+end_main: ENDMAIN NEWLINE;
 
 
 /* ----------- DICTIONARIES ----------- */
