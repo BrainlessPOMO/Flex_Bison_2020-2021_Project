@@ -33,6 +33,8 @@ integer         [0-9][0-9]*
 float_number    "0"|{integer}*"."{integer}+
 char            \'{print}\'
 string          \".*\" 
+WHITESPACE        [ \t]*
+NEWLINE           [\n]*
 
 %%
 
@@ -48,6 +50,8 @@ string          \".*\"
 
 
 <ML_COMMENT><<EOF>>       {yyerror("Unterminated comment", 1); return 0;}
+
+
 
 "PROGRAM"       { print_return("PROGRAM"); return PROGRAM; }
 
@@ -85,8 +89,7 @@ string          \".*\"
 
 
 ";"             {  print_return("QM"); return QM; }
-"\n"            {  line_no++; print_return("NEWLINE"); return NEWLINE; }     
-"\t"            {  print_return("INDENT"); return INDENT; }     
+     
        
 "+="            {  print_return("ADD_ASSIGN"); return ADD_ASSIGN; }        
 "-="            {  print_return("SUB_ASSIGN"); return SUB_ASSIGN; }       
@@ -126,6 +129,8 @@ string          \".*\"
 {float_number}  { print_return("FLOAT"); return FLOAT; }
 {char}	        { print_return("CHAR"); return CHAR; }
 {string}	    { print_return("STRING"); return STRING; }
+{NEWLINE}       {line_no++; print_return("NEWLINE"); return NEWLINE;}
+{WHITESPACE}    {}
 
 %%
 /* -------------------------------------------------------------------------------------- C FUNCTIONS ---------------------------------------------------------------------------------------------------- */
