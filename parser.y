@@ -307,6 +307,7 @@ end_main: ENDMAIN NEWLINE;
 dictionaries: IDENTIFIER ASSIGN L_BRACE dictionary_data R_BRACE 
         | IDENTIFIER ASSIGN IDENTIFIER L_PAR L_BRACK L_PAR dictionary_data R_PAR R_BRACK R_PAR
 	| IDENTIFIER ASSIGN IDENTIFIER L_PAR dictionary_data optional_parameters dictionary_data R_PAR 
+        | IDENTIFIER ASSIGN function_call
         | array_value QM
         ;
 
@@ -319,7 +320,7 @@ dictionary_data: data_type COMMA data_type optional_parameters
 
 /* ----------- CALCULATE ------------ */
 
-calc_assignment: IDENTIFIER ASSIGN int_op { Change($1, $3); };
+calc_assignment: IDENTIFIER ASSIGN int_op { Change($1, $3); }  ;
 	
 int_op: int_data { $$ = $1; } 
 	| int_op PLUS int_data { $$ = $1 + $3; }

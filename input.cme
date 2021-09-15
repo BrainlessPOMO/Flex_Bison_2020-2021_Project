@@ -28,12 +28,12 @@ FUNCTION doStuff(INTEGER var1, INTEGER var2)
     RETURN var2;
 END_FUNCTION
 
-%functon/switch case test 
-
+ 
 FUNCTION swissFiss(INTEGER day)
     SWITCH(<day>)
     CASE(<11>)
         PRINT("Monday");
+
         BREAK;
     CASE(<12>)
         PRINT("Tuesday");
@@ -49,26 +49,32 @@ FUNCTION swissFiss(INTEGER day)
         BREAK;
     CASE(<16>)
         PRINT("Saturday");
-        BREAK;
+
+        BREAK;    
     CASE(<17>)
         PRINT("Sunday");
         BREAK;
     ENDSWITCH
+    RETURN day;    
 END_FUNCTION
-
-%main function
 
 STARTMAIN
     VARS
+
         CHAR char1, char2;
         INTEGER varr, foo, foo1, foo2, foo3, foo4, foo5, pinakas[100], day;
     
     % calculations
-    %foo = 10;
-    %foo1 = 100;
-    %foo2 = foo + foo1;
+    foo = 10.8;
+    foo1 = 50;
+    %foo2 = foo + foo1
     %foo3 = foo * foo2;
-    %foo4 = doStuff(foo3, foo1);
+    foo4 = doStuff(foo3, foo1);
+
+    plus = 50 + 60; 
+    mul = 10*20;
+    div = 300/50;
+    sub = 40-60;
 
     pinakas[10] = 10;
     pinakas[20] = 20;
@@ -81,7 +87,7 @@ STARTMAIN
     pinakas[90] = 90;
     pinakas[100] = 100;
 
-    FOR varr:=10 TO 100 STEP 10
+    FOR varr:=10 TO 100 STEP 10 
         PRINT(""[,pinakas[varr]]);
     ENDFOR
 
@@ -89,5 +95,9 @@ STARTMAIN
     
     %function_call
     swissFiss(day);
-%end of program.:)
+
+
+    %end of program.:)
+
 ENDMAIN
+
